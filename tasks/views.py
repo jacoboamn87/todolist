@@ -1,3 +1,10 @@
 from django.shortcuts import render
 
-# Create your views here.
+from tasks.models import Task
+
+
+# CBV
+
+
+# Traditional views
+
