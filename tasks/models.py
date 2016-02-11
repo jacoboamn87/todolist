@@ -1,23 +1,20 @@
-from __future__ import unicode_literals
-
+from django.conf import settings
 from django.db import models
-from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext as _
 
-from utils.models_mixins import (
-    Signable, Timestampable
-)
 
-
-@python_2_unicode_compatible
-class List(models.Model, Signable, Timestampable):
+class List(models.Model):
     name = models.CharField(_('Name'), null=False, blank=False, max_length=255)
+    author = models.ForeignKey(
+        settings.AUTH_USER_MODEL, null=False, blank=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         verbose_name = _('List')
         verbose_name_plural = _('Lists')
 
-    def __str__(self):
+    def __unicode__(self):
         return self.name
 
     @models.permalink
@@ -25,8 +22,7 @@ class List(models.Model, Signable, Timestampable):
         return ('')
 
 
-@python_2_unicode_compatible
-class Task(models.Model, Signable, Timestampable):
+class Task(models.Model):
     LOWEST = 1
     LOW = 2
     MEDIUM = 3
@@ -51,14 +47,25 @@ class Task(models.Model, Signable, Timestampable):
     todo_list = models.ForeignKey(
         List, verbose_name=_('List'), null=True, blank=True
     )
+    author = models.ForeignKey(
+        settings.AUTH_USER_MODEL, null=False, blank=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         verbose_name = _('Task')
         verbose_name_plural = _('Tasks')
 
-    def __str__(self):
+    def __unicode__(self):
         return self.name
 
     @models.permalink
     def get_absolute_url(self):
         return ('')
+
+    def get_priority(self):
+        for pair in self.PRIORITY_CHOICES:
+            if self.priority == pair[0]:
+                return pair[1]
+
+        return self.priority

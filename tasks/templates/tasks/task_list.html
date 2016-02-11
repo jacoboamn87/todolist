@@ -1,1 +1,12 @@
 {% extends "layout.html" %}
+
+{% load i18n %}
+
+{% block content %}
+    <h1>Tasks <small>- <a href="{% url 'tasks:task_create' %}">{% trans "Add new task" %}</a></small></h1>
+    <ul>
+        {% for task in tasks %}
+            <li><a href="{% url 'tasks:task_detail' task.id %}">{{ task }}</a> - {% trans "Priority:" %} {{ task.get_priority }} - {% trans "Due to:" %} {{ task.due_date }}</li>
+        {% endfor %}
+    </ul>
+{% endblock content %}

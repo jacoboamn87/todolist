@@ -43,7 +43,6 @@ THIRD_PARTY_APPS = []
 
 CUSTOM_APPS = [
     'tasks.apps.TasksConfig',
-    'utils',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + CUSTOM_APPS
@@ -64,7 +63,7 @@ ROOT_URLCONF = 'todo.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['todo/templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
