@@ -1,9 +1,14 @@
 from django.core.urlresolvers import reverse_lazy
+from django.http import HttpResponseRedirect
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import generic
 
+from extra_views import (
+    CreateWithInlinesView, UpdateWithInlinesView
+)
+
 from tasks.models import Task, List
-from tasks.forms import TaskForm, ListForm
+from tasks.forms import TaskForm, TasksInline, ListForm
 
 
 class TaskListView(LoginRequiredMixin, generic.ListView):
@@ -55,6 +60,38 @@ class ListDetailView(generic.DetailView):
 
     def get_queryset(self):
         return List.objects.filter(author=self.request.user)
+
+
+class ListWithTasksCreateView(CreateWithInlinesView):
+    model = List
+    form_class = ListForm
+    inlines = [TasksInline]
+    template_name = 'tasks/list_form_with_inlines.html'
+
+    def get_success_url(self):
+        return reverse_lazy('tasks:list_list')
+
+    def forms_valid(self, form, inlines):
+        """
+        If the form and formsets are valid, save the associated models.
+        """
+        self.object = form.save(commit=False)
+        self.object.author = self.request.user
+        self.object.save()
+
+        for formset in inlines:
+            formset.save()
+        return HttpResponseRedirect(self.get_success_url())
+
+
+class ListWithTasksUpdateView(UpdateWithInlinesView):
+    model = List
+    form_class = ListForm
+    inlines = [TasksInline]
+    template_name = 'tasks/list_form_with_inlines.html'
+
+    def get_success_url(self):
+        return reverse_lazy('tasks:list_list')
 
 
 class ListListView(generic.ListView):

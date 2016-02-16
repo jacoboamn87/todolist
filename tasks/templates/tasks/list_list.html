@@ -1,9 +1,11 @@
 {% extends "layout.html" %}
 
+{% load i18n %}
+
 {% block content %}
     <ul>
-        {% for task in tasks %}
-            <li>{{ task }} - {% trans "Due to:" %} {{ task.due_date }}</li>
+        {% for list in lists %}
+            <li>{{ list }}</li>
         {% endfor %}
     </ul>
 {% endblock content %}

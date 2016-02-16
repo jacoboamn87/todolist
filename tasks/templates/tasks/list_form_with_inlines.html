@@ -6,6 +6,11 @@
     <form action="." method="post">
         {% csrf_token %}
         {{ form.as_p }}
+        <h2>Inlines</h2>
+        {% for f in inlines %}
+            {{ f.as_p }}
+            <hr>
+        {% endfor %}
         <input type="submit" value="{% trans 'Save' %}">
     </form>
 {% endblock content %}
